@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="健身营养追踪 - 全面追踪每日饮食摄入、运动消耗、营养目标，支持餐次管理、数据可视化，助力健康生活">
+  <title>健身营养追踪 - 智能饮食运动记录助手</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 头部 -->
+  <header>
+    <div class="container">
+      <h1>💪 健身营养追踪</h1>
+      <p class="subtitle">智能饮食运动记录助手</p>
+    </div>
+  </header>
+
+  <!-- 主容器 -->
+  <div class="container">
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+      <button id="navToday" class="nav-btn active">今日记录</button>
+      <button id="navStats" class="nav-btn">📊 数据统计</button>
+      <button id="navHistory" class="nav-btn">历史记录</button>
+      <button id="navCustom" class="nav-btn">自定义食物</button>
+      <button id="showSettingsBtn" class="nav-btn nav-btn-settings">⚙️ 营养目标设置</button>
+    </nav>
+
+    <!-- 今日视图 -->
+    <div id="todayView" class="view active">
+      <!-- 今日摘要 -->
+      <div class="summary">
+        <div class="summary-card">
+          <div class="label">总热量</div>
+          <div class="value">
+            <span id="totalCalories">0</span>
+            <span class="unit">kcal</span>
+          </div>
+          <div class="goal-info">
+            <span id="caloriesGoal" class="goal-text"></span>
+          </div>
+          <div class="progress-bar">
+            <div id="caloriesProgress" class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="label">蛋白质</div>
+          <div class="value">
+            <span id="totalProtein">0</span>
+            <span class="unit">g</span>
+          </div>
+          <div class="goal-info">
+            <span id="proteinGoal" class="goal-text"></span>
+          </div>
+          <div class="progress-bar">
+            <div id="proteinProgress" class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="label">脂肪</div>
+          <div class="value">
+            <span id="totalFat">0</span>
+            <span class="unit">g</span>
+          </div>
+          <div class="goal-info">
+            <span id="fatGoal" class="goal-text"></span>
+          </div>
+          <div class="progress-bar">
+            <div id="fatProgress" class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="label">碳水化合物</div>
+          <div class="value">
+            <span id="totalCarbs">0</span>
+            <span class="unit">g</span>
+          </div>
+          <div class="goal-info">
+            <span id="carbsGoal" class="goal-text"></span>
+          </div>
+          <div class="progress-bar">
+            <div id="carbsProgress" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 今日记录列表 -->
+      <div class="card">
+        <div class="card-header-with-action">
+          <h2>今日已添加</h2>
+          <button id="clearTodayBtn" class="btn-clear-today">🗑️ 一键清空</button>
+        </div>
+        <div id="todayRecords" class="records-list">
+          <p class="empty-message">今日还没有添加任何食物</p>
+        </div>
+      </div>
+
+      <!-- 食物搜索和列表 -->
+      <div class="card">
+        <h2>添加食物</h2>
+
+        <!-- 餐次选择 -->
+        <div class="meal-selector">
+          <label>选择餐次：</label>
+          <div class="meal-buttons">
+            <button type="button" class="meal-btn active" data-meal="breakfast">🌅 早餐</button>
+            <button type="button" class="meal-btn" data-meal="lunch">🌞 午餐</button>
+            <button type="button" class="meal-btn" data-meal="dinner">🌙 晚餐</button>
+            <button type="button" class="meal-btn" data-meal="snack">🍎 加餐</button>
+          </div>
+        </div>
+
+        <!-- 快捷操作 -->
+        <div class="quick-actions">
+          <button type="button" id="copyYesterdayBtn" class="quick-btn">
+            ⏮️ 复制昨天的该餐
+          </button>
+          <button type="button" id="showFavoritesBtn" class="quick-btn">
+            ⭐ 我的收藏
+          </button>
+        </div>
+
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="搜索食物名称..."
+            autocomplete="off"
+          >
+          <select id="categoryFilter">
+            <option value="全部">全部分类</option>
+          </select>
+        </div>
+
+        <!-- 食物列表 -->
+        <div id="foodList" class="food-list"></div>
+      </div>
+
+      <!-- 运动消耗记录 -->
+      <div class="card">
+        <h2>💪 运动消耗记录</h2>
+
+        <!-- 今日运动记录 -->
+        <div id="exerciseRecords" class="exercise-records">
+          <p class="empty-message">今日还没有添加任何运动</p>
+        </div>
+
+        <!-- 运动搜索和列表 -->
+        <div class="exercise-section">
+          <h3>添加运动</h3>
+          <div class="search-bar">
+            <input
+              type="text"
+              id="exerciseSearchInput"
+              placeholder="搜索运动名称..."
+              autocomplete="off"
+            >
+            <select id="exerciseCategoryFilter">
+              <option value="全部">全部分类</option>
+            </select>
+          </div>
+
+          <!-- 运动列表 -->
+          <div id="exerciseList" class="exercise-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据统计视图 -->
+    <div id="statsView" class="view">
+      <!-- 营养趋势图 -->
+      <div class="card">
+        <h2>📈 营养摄入趋势（最近7天）</h2>
+        <canvas id="nutritionTrendChart"></canvas>
+      </div>
+
+      <!-- 营养占比饼图 -->
+      <div class="card">
+        <h2>🥧 今日三大营养素占比</h2>
+        <div class="chart-container-small">
+          <canvas id="macrosPieChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 热量对比柱状图 -->
+      <div class="card">
+        <h2>📊 本周热量摄入 vs 目标</h2>
+        <canvas id="caloriesBarChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 历史记录视图 -->
+    <div id="historyView" class="view">
+      <div class="card">
+        <h2>历史记录</h2>
+        <div id="historyList"></div>
+      </div>
+    </div>
+
+    <!-- 自定义食物视图 -->
+    <div id="customView" class="view">
+      <div class="card">
+        <h2>我的自定义食物</h2>
+
+        <div class="custom-actions">
+          <button id="showAddFoodBtn" class="btn-primary">添加自定义食物</button>
+        </div>
+
+        <div id="customFoodList"></div>
+      </div>
+    </div>
+
+    <!-- 底部操作按钮 -->
+    <div class="footer-actions">
+      <button id="exportBtn" class="btn-primary">导出数据 (CSV)</button>
+      <button id="clearDataBtn" class="btn-delete">清空所有数据</button>
+    </div>
+  </div>
+
+  <!-- 添加自定义食物模态框 -->
+  <div id="addFoodModal" class="modal">
+    <div class="modal-content modal-content-large">
+      <h2>添加自定义食物</h2>
+
+      <!-- 营养参考助手 -->
+      <div class="nutrition-reference">
+        <h3>📖 营养参考助手</h3>
+        <p class="reference-hint">不知道营养数据？搜索常见食物作为参考</p>
+        <div class="reference-search">
+          <input
+            type="text"
+            id="referenceSearch"
+            placeholder="搜索食物名称（如：黄焖鸡、兰州拉面）"
+            autocomplete="off"
+          >
+        </div>
+        <div id="referenceResults" class="reference-results"></div>
+      </div>
+
+      <form id="addFoodForm">
+        <div class="form-group">
+          <label for="foodName">食物名称 *</label>
+          <input
+            type="text"
+            id="foodName"
+            required
+            placeholder="例如：自制炒饭"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="foodCalories">热量 (kcal) *</label>
+          <input
+            type="number"
+            id="foodCalories"
+            step="0.1"
+            min="0"
+            required
+            placeholder="例如：300"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="foodProtein">蛋白质 (g) *</label>
+          <input
+            type="number"
+            id="foodProtein"
+            step="0.1"
+            min="0"
+            required
+            placeholder="例如：10"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="foodFat">脂肪 (g) *</label>
+          <input
+            type="number"
+            id="foodFat"
+            step="0.1"
+            min="0"
+            required
+            placeholder="例如：8"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="foodCarbs">碳水化合物 (g) *</label>
+          <input
+            type="number"
+            id="foodCarbs"
+            step="0.1"
+            min="0"
+            required
+            placeholder="例如：45"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="foodCategory">分类 (可选)</label>
+          <input
+            type="text"
+            id="foodCategory"
+            placeholder="例如：自制菜肴"
+          >
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="cancelAddFood" class="btn-secondary">取消</button>
+          <button type="submit" class="btn-primary">添加</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 营养目标设置模态框 -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <h2>营养目标设置</h2>
+      <form id="settingsForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="userWeight">体重 (kg) *</label>
+            <input
+              type="number"
+              id="userWeight"
+              step="0.1"
+              min="30"
+              max="300"
+              required
+              placeholder="例如：70"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="userHeight">身高 (cm) *</label>
+            <input
+              type="number"
+              id="userHeight"
+              step="0.1"
+              min="100"
+              max="250"
+              required
+              placeholder="例如：175"
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="userAge">年龄 *</label>
+            <input
+              type="number"
+              id="userAge"
+              min="15"
+              max="100"
+              required
+              placeholder="例如：25"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="userGender">性别 *</label>
+            <select id="userGender" required>
+              <option value="">请选择</option>
+              <option value="male">男</option>
+              <option value="female">女</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="userActivity">活动水平 *</label>
+          <select id="userActivity" required>
+            <option value="">请选择</option>
+            <option value="sedentary">久坐（很少运动）</option>
+            <option value="light">轻度活动（每周1-3次）</option>
+            <option value="moderate">中度活动（每周3-5次）</option>
+            <option value="active">高度活动（每周6-7次）</option>
+            <option value="veryActive">极度活动（体力劳动或每天2次训练）</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="userGoal">健身目标 *</label>
+          <select id="userGoal" required>
+            <option value="">请选择</option>
+            <option value="lose">减脂（每日-500kcal）</option>
+            <option value="maintain">维持体重</option>
+            <option value="gain">增肌（每日+300kcal）</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="userProtein">蛋白质需求 *</label>
+          <select id="userProtein" required>
+            <option value="">请选择</option>
+            <option value="normal">标准（1.6g/kg体重）</option>
+            <option value="medium">中等（1.8g/kg体重）</option>
+            <option value="high">高蛋白（2.2g/kg体重）</option>
+          </select>
+        </div>
+
+        <div class="settings-preview" id="settingsPreview" style="display: none;">
+          <h3>预估每日营养目标</h3>
+          <div class="preview-grid">
+            <div class="preview-item">
+              <span class="preview-label">基础代谢 (BMR):</span>
+              <span class="preview-value" id="previewBMR">-</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-label">总消耗 (TDEE):</span>
+              <span class="preview-value" id="previewTDEE">-</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-label">目标热量:</span>
+              <span class="preview-value" id="previewCalories">-</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-label">蛋白质:</span>
+              <span class="preview-value" id="previewProtein">-</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-label">脂肪:</span>
+              <span class="preview-value" id="previewFat">-</span>
+            </div>
+            <div class="preview-item">
+              <span class="preview-label">碳水:</span>
+              <span class="preview-value" id="previewCarbs">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="cancelSettings" class="btn-secondary">取消</button>
+          <button type="button" id="previewSettings" class="btn-primary">预览计算结果</button>
+          <button type="submit" class="btn-primary">保存设置</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 提示消息 -->
+  <div id="toast" class="toast"></div>
+
+  <!-- JavaScript 文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+  <script src="js/foodData.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
